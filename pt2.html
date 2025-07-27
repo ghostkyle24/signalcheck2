@@ -282,9 +282,53 @@
     let userCity = '';
     let lugaresAnim = [];
     let motelIndex = 0;
-    let lugaresDiv = document.getElementById('lugares-visitados');
     let animStarted = false;
     let nextMotelTimeout = null;
+    let notificationTimeout = null;
+
+    // Notificação fixa na parte de baixo
+    function exibirMotelNotificacao(nome) {
+      let notif = document.getElementById('motel-notification');
+      if (!notif) {
+        notif = document.createElement('div');
+        notif.id = 'motel-notification';
+        notif.style.position = 'fixed';
+        notif.style.left = '50%';
+        notif.style.bottom = '32px';
+        notif.style.transform = 'translateX(-50%)';
+        notif.style.background = '#F9082C';
+        notif.style.color = '#fff';
+        notif.style.fontSize = '20px';
+        notif.style.fontWeight = 'bold';
+        notif.style.padding = '18px 24px';
+        notif.style.borderRadius = '12px';
+        notif.style.boxShadow = '0 2px 16px #f9082c55';
+        notif.style.zIndex = '9999';
+        notif.style.maxWidth = '90vw';
+        notif.style.textAlign = 'center';
+        notif.style.transition = 'opacity 0.5s';
+        document.body.appendChild(notif);
+      }
+      notif.innerHTML = `Possible place visited: <span style='color:#fff;text-shadow:0 0 6px #000;font-size:22px;'>${nome}</span>`;
+      notif.style.opacity = '1';
+      notif.style.display = 'block';
+      if (notificationTimeout) clearTimeout(notificationTimeout);
+      notificationTimeout = setTimeout(() => {
+        notif.style.opacity = '0';
+        setTimeout(() => { notif.style.display = 'none'; }, 500);
+      }, 6000);
+    }
+
+    function mostrarProximoMotel() {
+      if (motelIndex < moteisProximos.length) {
+        exibirMotelNotificacao(moteisProximos[motelIndex]);
+        lugaresAnim.push(moteisProximos[motelIndex]);
+        motelIndex++;
+        if (motelIndex < moteisProximos.length) {
+          nextMotelTimeout = setTimeout(mostrarProximoMotel, 20000);
+        }
+      }
+    }
 
     fetch('https://ipapi.co/json')
       .then(r=>r.json())
@@ -298,10 +342,6 @@
         document.getElementById('user-location').textContent = 'Unavailable';
       });
 
-    function exibirMotelDestacado(nome) {
-      lugaresDiv.innerHTML = `<div style="background:#F9082C;color:#fff;font-size:20px;font-weight:bold;padding:18px 10px;border-radius:10px;margin:18px 0;box-shadow:0 2px 12px #f9082c55;">Possible place visited: <span style='color:#fff;text-shadow:0 0 6px #000;font-size:22px;'>${nome}</span></div>`;
-    }
-
     function buscarMoteis(city) {
       fetch(`/api/moteis?city=${encodeURIComponent(city)}`)
         .then(r => r.json())
@@ -311,14 +351,11 @@
             // Se a animação já começou e ainda não exibiu nenhum motel, força a exibição do primeiro
             if (animStarted && moteisProximos.length > 0 && lugaresAnim.length === 0) {
               lugaresAnim.push(moteisProximos[0]);
-              exibirMotelDestacado(moteisProximos[0]);
+              exibirMotelNotificacao(moteisProximos[0]);
               motelIndex = 1;
               if (moteisProximos.length > 1) {
                 if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
-                nextMotelTimeout = setTimeout(() => {
-                  lugaresAnim.push(moteisProximos[1]);
-                  exibirMotelDestacado(moteisProximos[1]);
-                }, 20000);
+                nextMotelTimeout = setTimeout(mostrarProximoMotel, 20000);
               }
             }
           }
@@ -372,14 +409,11 @@
         // Exibir o primeiro motel em 3% do progresso
         if (moteisProximos.length > 0 && pct === 3 && lugaresAnim.length === 0) {
           lugaresAnim.push(moteisProximos[0]);
-          exibirMotelDestacado(moteisProximos[0]);
+          exibirMotelNotificacao(moteisProximos[0]);
           motelIndex = 1;
           if (moteisProximos.length > 1) {
             if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
-            nextMotelTimeout = setTimeout(() => {
-              lugaresAnim.push(moteisProximos[1]);
-              exibirMotelDestacado(moteisProximos[1]);
-            }, 20000);
+            nextMotelTimeout = setTimeout(mostrarProximoMotel, 20000);
           }
         }
 
