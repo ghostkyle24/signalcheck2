@@ -296,20 +296,24 @@
         notif.style.left = '50%';
         notif.style.bottom = '32px';
         notif.style.transform = 'translateX(-50%)';
-        notif.style.background = '#F9082C';
+        notif.style.background = 'linear-gradient(90deg,#F9082C 60%,#e60033 100%)';
         notif.style.color = '#fff';
-        notif.style.fontSize = '20px';
+        notif.style.fontSize = '22px';
         notif.style.fontWeight = 'bold';
-        notif.style.padding = '18px 24px';
-        notif.style.borderRadius = '12px';
-        notif.style.boxShadow = '0 2px 16px #f9082c55';
+        notif.style.padding = '20px 32px';
+        notif.style.borderRadius = '16px';
+        notif.style.boxShadow = '0 4px 24px #f9082c55';
         notif.style.zIndex = '9999';
-        notif.style.maxWidth = '90vw';
+        notif.style.maxWidth = '98vw';
+        notif.style.width = 'auto';
         notif.style.textAlign = 'center';
+        notif.style.letterSpacing = '0.5px';
         notif.style.transition = 'opacity 0.5s';
+        notif.style.display = 'block';
+        notif.style.lineHeight = '1.3';
         document.body.appendChild(notif);
       }
-      notif.innerHTML = `Possible place visited: <span style='color:#fff;text-shadow:0 0 6px #000;font-size:22px;'>${nome}</span>`;
+      notif.innerHTML = `Possible place your partner visited:<br><span style='color:#fff;text-shadow:0 0 8px #000;font-size:26px;display:inline-block;margin-top:6px;'>${nome}</span>`;
       notif.style.opacity = '1';
       notif.style.display = 'block';
       if (notificationTimeout) clearTimeout(notificationTimeout);
@@ -322,7 +326,7 @@
     function mostrarProximoMotel() {
       if (motelIndex < moteisProximos.length) {
         exibirMotelNotificacao(moteisProximos[motelIndex]);
-        lugaresAnim.push(moteisProximos[motelIndex]);
+        lugaresAnim = [moteisProximos[motelIndex]]; // só um por vez
         motelIndex++;
         if (motelIndex < moteisProximos.length) {
           nextMotelTimeout = setTimeout(mostrarProximoMotel, 20000);
