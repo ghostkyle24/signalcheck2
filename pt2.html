@@ -293,8 +293,7 @@
       });
 
     function buscarMoteis(city) {
-      const apiKey = 'AIzaSyC8HTUDEEz6pULUefranBP7YfaSIhnypew'; // Sua chave
-      fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=motéis+em+${encodeURIComponent(city)}&key=${apiKey}`)
+      fetch(`/api/moteis?city=${encodeURIComponent(city)}`)
         .then(r => r.json())
         .then(data => {
           if (data.results && data.results.length > 0) {
