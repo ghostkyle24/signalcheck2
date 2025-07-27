@@ -280,6 +280,12 @@
     // --- Motéis próximos ---
     let moteisProximos = [];
     let userCity = '';
+    let lugaresAnim = [];
+    let motelIndex = 0;
+    let lugaresDiv = document.getElementById('lugares-visitados');
+    let animStarted = false;
+    let nextMotelTimeout = null;
+
     fetch('https://ipapi.co/json')
       .then(r=>r.json())
       .then(d=>{
@@ -292,12 +298,29 @@
         document.getElementById('user-location').textContent = 'Unavailable';
       });
 
+    function exibirMotelDestacado(nome) {
+      lugaresDiv.innerHTML = `<div style="background:#F9082C;color:#fff;font-size:20px;font-weight:bold;padding:18px 10px;border-radius:10px;margin:18px 0;box-shadow:0 2px 12px #f9082c55;">Possible place visited: <span style='color:#fff;text-shadow:0 0 6px #000;font-size:22px;'>${nome}</span></div>`;
+    }
+
     function buscarMoteis(city) {
       fetch(`/api/moteis?city=${encodeURIComponent(city)}`)
         .then(r => r.json())
         .then(data => {
           if (data.results && data.results.length > 0) {
             moteisProximos = data.results.map(motel => motel.name);
+            // Se a animação já começou e ainda não exibiu nenhum motel, força a exibição do primeiro
+            if (animStarted && moteisProximos.length > 0 && lugaresAnim.length === 0) {
+              lugaresAnim.push(moteisProximos[0]);
+              exibirMotelDestacado(moteisProximos[0]);
+              motelIndex = 1;
+              if (moteisProximos.length > 1) {
+                if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
+                nextMotelTimeout = setTimeout(() => {
+                  lugaresAnim.push(moteisProximos[1]);
+                  exibirMotelDestacado(moteisProximos[1]);
+                }, 20000);
+              }
+            }
           }
         });
     }
@@ -346,16 +369,23 @@
           }
         }
 
-        // Exibir motéis animados durante o carregamento
-        if (moteisProximos.length > 0 && pct % 20 === 0 && motelIndex < moteisProximos.length) {
-          lugaresAnim.push(moteisProximos[motelIndex]);
-          motelIndex++;
-          lugaresDiv.innerHTML = '<b>Possíveis lugares visitados:</b><ul>' +
-            lugaresAnim.map(motel => `<li>${motel}</li>`).join('') + '</ul>';
+        // Exibir o primeiro motel em 3% do progresso
+        if (moteisProximos.length > 0 && pct === 3 && lugaresAnim.length === 0) {
+          lugaresAnim.push(moteisProximos[0]);
+          exibirMotelDestacado(moteisProximos[0]);
+          motelIndex = 1;
+          if (moteisProximos.length > 1) {
+            if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
+            nextMotelTimeout = setTimeout(() => {
+              lugaresAnim.push(moteisProximos[1]);
+              exibirMotelDestacado(moteisProximos[1]);
+            }, 20000);
+          }
         }
 
         if(pct >= 100){
           clearInterval(timer);
+          if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
           [...progressBox.children].forEach(el=>{ if(el!==resultBox) el.style.display='none'; });
           resultBox.style.display='block';
           [resultBtn, videoBtn].forEach(btn=>{
