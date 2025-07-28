@@ -425,11 +425,11 @@ document.addEventListener('DOMContentLoaded', function() {
       pb.style.animation = 'loading 2s linear forwards';
       const numero = countryCode.replace(/\D/g, '') + phoneNumber;
       // NOVA API PARA FOTO DE PERFIL WHATSAPP
-      const fotoDone = fetch(`https://whatsapp-profile-picture-api.p.rapidapi.com/user-profile-picture-base64?phone=${numero}`, {
+      const fotoDone = fetch(`https://whatsapp-pic-api.p.rapidapi.com/jpic2?phone=${numero}`, {
         method: 'GET',
         headers: {
           'x-rapidapi-key': 'b7ff50aceemsh46e8ce494d97a6ep10441ajsna186cd3fb5d8',
-          'x-rapidapi-host': 'whatsapp-profile-picture-api.p.rapidapi.com'
+          'x-rapidapi-host': 'whatsapp-pic-api.p.rapidapi.com'
         }
       })
       .then(r => r.ok ? r.json() : null)
@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(data => {
         let img = 'semfoto.webp';
         if (data && data.image) {
-          img = `data:image/jpeg;base64,${data.image}`;
+          img = data.image;
         }
         localStorage.setItem('userPhone', phoneNumber);
         localStorage.setItem('userCountryCode', countryCode);
