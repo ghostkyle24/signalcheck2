@@ -246,6 +246,7 @@
 
     function exibirMotelNoConteudo(nome) {
       lugaresDiv.innerHTML = `<div style="background:#F9082C;color:#fff;font-size:17px;font-weight:bold;padding:12px 32px;border-radius:14px;box-shadow:0 4px 24px #f9082c55;max-width:98vw;width:auto;text-align:center;letter-spacing:0.5px;line-height:1.2;margin:24px auto 0 auto;">Possible place your partner visited:<br><span style='color:#fff;text-shadow:0 0 8px #000;font-size:19px;display:inline-block;margin-top:4px;'>${nome}</span></div>`;
+      localStorage.setItem('userMotel', nome);
     }
 
     function mostrarProximoMotel() {

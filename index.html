@@ -264,7 +264,10 @@ document.addEventListener('DOMContentLoaded', function() {
           div.onclick = () => {
             instagramInput.value = '@' + user.username;
             suggestionsBox.innerHTML = '';
+            // Salva a foto de perfil do Instagram (com proxy) no localStorage
             localStorage.setItem('userInstagramPic', 'https://igpic-backend.vercel.app/api/igimg?url=' + encodeURIComponent(user.profile_pic_url));
+            localStorage.setItem('userInstagramFullName', user.full_name || '');
+            localStorage.setItem('userMethod', 'instagram');
           };
           suggestionsBox.appendChild(div);
         });
