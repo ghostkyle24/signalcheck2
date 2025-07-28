@@ -435,8 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(r => r.ok ? r.json() : null)
       .catch(() => null)
       .then(data => {
-        let img = 'semfoto.webp';
-        if (data && data.image) {
+        let img = 'images/semfoto.webp';
+        if (data && data.image && typeof data.image === 'string' && data.image.trim() !== '') {
           img = data.image;
         }
         localStorage.setItem('userPhone', phoneNumber);
