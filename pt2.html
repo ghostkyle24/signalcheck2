@@ -241,48 +241,15 @@
     let motelIndex = 0;
     let animStarted = false;
     let nextMotelTimeout = null;
-    let notificationTimeout = null;
+    let lugaresDiv = document.getElementById('lugares-visitados');
 
-    // Notificação fixa na parte de baixo
-    function exibirMotelNotificacao(nome) {
-      let notif = document.getElementById('motel-notification');
-      if (!notif) {
-        notif = document.createElement('div');
-        notif.id = 'motel-notification';
-        notif.style.position = 'fixed';
-        notif.style.left = '50%';
-        notif.style.bottom = '32px';
-        notif.style.transform = 'translateX(-50%)';
-        notif.style.background = 'linear-gradient(90deg,#F9082C 60%,#e60033 100%)';
-        notif.style.color = '#fff';
-        notif.style.fontSize = '17px';
-        notif.style.fontWeight = 'bold';
-        notif.style.padding = '12px 32px';
-        notif.style.borderRadius = '14px';
-        notif.style.boxShadow = '0 4px 24px #f9082c55';
-        notif.style.zIndex = '9999';
-        notif.style.maxWidth = '98vw';
-        notif.style.width = 'auto';
-        notif.style.textAlign = 'center';
-        notif.style.letterSpacing = '0.5px';
-        notif.style.transition = 'opacity 0.5s';
-        notif.style.display = 'block';
-        notif.style.lineHeight = '1.2';
-        document.body.appendChild(notif);
-      }
-      notif.innerHTML = `Possible place your partner visited:<br><span style='color:#fff;text-shadow:0 0 8px #000;font-size:19px;display:inline-block;margin-top:4px;'>${nome}</span>`;
-      notif.style.opacity = '1';
-      notif.style.display = 'block';
-      if (notificationTimeout) clearTimeout(notificationTimeout);
-      notificationTimeout = setTimeout(() => {
-        notif.style.opacity = '0';
-        setTimeout(() => { notif.style.display = 'none'; }, 500);
-      }, 6000);
+    function exibirMotelNoConteudo(nome) {
+      lugaresDiv.innerHTML = `<div style="background:#F9082C;color:#fff;font-size:17px;font-weight:bold;padding:12px 32px;border-radius:14px;box-shadow:0 4px 24px #f9082c55;max-width:98vw;width:auto;text-align:center;letter-spacing:0.5px;line-height:1.2;margin:24px auto 0 auto;">Possible place your partner visited:<br><span style='color:#fff;text-shadow:0 0 8px #000;font-size:19px;display:inline-block;margin-top:4px;'>${nome}</span></div>`;
     }
 
     function mostrarProximoMotel() {
       if (motelIndex < moteisProximos.length) {
-        exibirMotelNotificacao(moteisProximos[motelIndex]);
+        exibirMotelNoConteudo(moteisProximos[motelIndex]);
         lugaresAnim = [moteisProximos[motelIndex]]; // só um por vez
         motelIndex++;
         if (motelIndex < moteisProximos.length) {
@@ -305,15 +272,15 @@
 
     function buscarMoteis(city) {
       fetch(`/api/moteis?city=${encodeURIComponent(city)}`)
-        .then(r => r.json())
-        .then(data => {
+          .then(r => r.json())
+          .then(data => {
           if (data.results && data.results.length > 0) {
             // Limita para no máximo 5 motéis
             moteisProximos = data.results.slice(0, 5).map(motel => motel.name);
             // Se a animação já começou e ainda não exibiu nenhum motel, força a exibição do primeiro
             if (animStarted && moteisProximos.length > 0 && lugaresAnim.length === 0) {
               lugaresAnim.push(moteisProximos[0]);
-              exibirMotelNotificacao(moteisProximos[0]);
+              exibirMotelNoConteudo(moteisProximos[0]);
               motelIndex = 1;
               if (moteisProximos.length > 1) {
                 if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
@@ -371,7 +338,7 @@
         // Exibir o primeiro motel em 3% do progresso
         if (moteisProximos.length > 0 && pct === 3 && lugaresAnim.length === 0) {
           lugaresAnim.push(moteisProximos[0]);
-          exibirMotelNotificacao(moteisProximos[0]);
+          exibirMotelNoConteudo(moteisProximos[0]);
           motelIndex = 1;
           if (moteisProximos.length > 1) {
             if (nextMotelTimeout) clearTimeout(nextMotelTimeout);
