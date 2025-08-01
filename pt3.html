@@ -206,11 +206,7 @@
       Our data intelligence algorithm, based on words and photos,
       <strong>found suspicious messages and files...</strong>
     </div>
-    <div style="background:#F9082C;color:#fff;font-size:18px;font-weight:bold;padding:16px 24px;border-radius:14px;box-shadow:0 4px 24px #f9082c55;max-width:98vw;width:auto;text-align:center;letter-spacing:0.5px;line-height:1.2;margin:24px auto 0 auto;">
-      Possible suspicious audio found on your partner’s device:<br>
-      <div id="audio-elevenlabs" style="margin-top:12px;"></div>
-      <div style="margin-top:16px;font-size:17px;font-weight:bold;color:#fff;background:#e60033;padding:10px 18px;border-radius:10px;box-shadow:0 2px 8px #e6003355;max-width:90vw;display:inline-block;">12 more audios like this found</div>
-    </div>
+    
     <img id="fotoperfil" src="images/semfoto.webp" class="foto-perfil" alt="Perfil">
 
     <!-- info -->
@@ -283,7 +279,7 @@
         <li>✅ Tracking up to 3 numbers</li>
       </ul>
       <a href="https://go.perfectpay.com.br/PPU38CPT7NE" class="btn">CLICK TO UNLOCK THE APP WITH 95% OFF 🔐</a>
-      <div id="audio-elevenlabs" style="margin-top:24px;"></div>
+      
     </div>
 
     <!-- footer -->
@@ -328,59 +324,6 @@
     }
     document.getElementById('fotoperfil').src = foto;
   })();
-</script>
-
-<script>
-// Função utilitária para pegar o primeiro nome
-function getFirstName(fullName) {
-  if (!fullName) return '';
-  return fullName.trim().split(' ')[0];
-}
-// Integração ElevenLabs para áudio dinâmico
-document.addEventListener('DOMContentLoaded', function() {
-  // Checa se o usuário escolheu Instagram
-  const userMethod = localStorage.getItem('userMethod'); // Salve isso no index.html ao escolher o método
-  if (userMethod === 'instagram') {
-    // Pega o nome completo salvo (deve ser salvo no autocomplete do Instagram)
-    const fullName = localStorage.getItem('userInstagramFullName') || '';
-    const firstName = getFirstName(fullName) || 'your partner';
-    const motelName = localStorage.getItem('userMotel') || 'the motel';
-    const text = `${firstName}, are we going to meet at ${motelName} or do you prefer another place?`;
-
-    async function gerarAudioElevenLabs(text) {
-      const apiKey = 'sk_6d0712487507c8e29a05a6e7d7a040f4a2a55315b7b38e26';
-      const voiceId = 'uYXf8XasLslADfZ2MB4u';
-      const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'xi-api-key': apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          text: text,
-          model_id: 'eleven_monolingual_v1',
-          voice_settings: { stability: 0.5, similarity_boost: 0.5 }
-        })
-      });
-
-      if (!response.ok) {
-        document.getElementById('audio-elevenlabs').innerHTML = '<div style="color:#F9082C;font-size:15px;">Audio unavailable at the moment.</div>';
-        return;
-      }
-
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audioPlayer = document.createElement('audio');
-      audioPlayer.controls = true;
-      audioPlayer.src = audioUrl;
-      document.getElementById('audio-elevenlabs').appendChild(audioPlayer);
-    }
-
-    gerarAudioElevenLabs(text);
-  }
-});
 </script>
 
 
